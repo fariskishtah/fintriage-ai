@@ -80,28 +80,91 @@ Updated: 2026-11-03
 
 - **SimpleRNN / LSTM / GRU training** on MPS, up to 8 epochs each, early stopping
   on validation macro F1. Log: `/tmp/rnn_train.log`.
-  - SimpleRNN **done**: best val macro F1 **0.7486**, 1,179 s, 8 epochs, 2.58 M params
-  - LSTM: running
-  - GRU: queued
+  - SimpleRNN **done**: val macro F1 **0.7486**, 1,179 s, 8 epochs, 2.58 M params
+  - LSTM **done**: val macro F1 **0.8147**, 3,382 s, 8 epochs, 2.61 M params
+  - GRU: running
+- **DistilBERT** fine-tuning on a Kaggle Tesla T4. The first run failed in 28 s
+  at the split-verification assert — Kaggle's dataset pipeline decompresses
+  `.gz` on upload, so the manifest arrived as `split_ids.csv`. The assert did
+  its job: it refused to train against a manifest it could not find. The lookup
+  now accepts either name (verified locally against both; all three fingerprints
+  still MATCH) and version 2 is running.
 
-## BLOCKED — one action needed
+## BLOCKED
 
-- **DistilBERT fine-tuning.** 49.6 s/step on M2 MPS → ~86 h locally. Everything
-  for the Kaggle run is built and pushed; the only thing missing is Kaggle API
-  credentials on this machine:
-  `~/.kaggle/kaggle.json` from https://www.kaggle.com/settings → API → Create New
-  Token. Once it is in place, `python scripts/kaggle_launch.py --push` runs the
-  whole thing with no further interaction.
-- **Hugging Face Spaces deployment.** Needs a write-scoped `HF_TOKEN`. The local
-  `hf` CLI is broken (`~/.local/bin/hf` points at a deleted interpreter).
-- **Hugging Face Spaces deployment.** Needs a write-scoped `HF_TOKEN`. The local
-  `hf` CLI is broken (`~/.local/bin/hf` points at a deleted interpreter).
+Nothing. Both remaining trainings are running; everything else is prepared.
+
+### Tests
+**89 passing, 30 skipped.** The skips are the real-checkpoint tests, which skip
+rather than pass on a mock so a missing model cannot look like a green run.
+### Hugging Face — authenticated
+- CLI repaired **inside the project venv**: `huggingface_hub[cli]` 2.x pulls the
+  browser-login flow but breaks the pinned `transformers` 4.46.3 and
+  `tokenizers` 0.20.3. Pinned **0.34.4** instead — the oldest release that still
+  ships the `hf` command and satisfies both (`pip check` clean). The 2.x CLI
+  lives in a throwaway venv used only for the browser login; both read the same
+  token store at `~/.cache/huggingface/token`.
+- Logged in via the OAuth device flow (no token ever pasted into chat, printed,
+  logged or committed). `hf auth whoami` → **fariskishtah**.
+- Write access confirmed by creating
+  **`fariskishtah/fintriage-distilbert` (private)** — the model repo the Space
+  will pull weights from.
+- The Space itself is created at deploy time, private, once a checkpoint exists.
+  Nothing is published without explicit approval; free CPU tier only.
+
+### Application defect found and fixed
+Launching the app returned **HTTP 500 on every page load**:
+`TypeError: argument of type 'bool' is not iterable` in
+`gradio_client/utils.py:887`. Cause: `gr.File`'s `api_info` carries
+`meta.additionalProperties: false`, which gradio_client 1.5.2 cannot walk, and
+gradio 5.9.1 computes `api_info` for the index route so `show_api=False` does
+not avoid it. Fixed by upgrading to **gradio 5.50.0 / gradio_client 1.14.0**
+(`get_api_info()` now succeeds); pinned in `requirements.txt`,
+`deploy/requirements-space.txt` and the Space `sdk_version`.
+
+Also fixed: long paths in the model-missing banner pushed the page sideways at
+phone width. Notes, cards and tables now wrap or scroll inside themselves.
+
+### UI verified in a browser at 1280px
+Hero, degradation banner, all seven tabs, the real dataset tiles
+(162,421 / 124,328 / 12,435 / 5) and the batch upload controls all render. The
+app boots correctly with no checkpoint and says so, rather than crashing.
+### Hugging Face — authenticated
+- CLI repaired **inside the project venv**: `huggingface_hub[cli]` 2.x pulls the
+  browser-login flow but breaks the pinned `transformers` 4.46.3 and
+  `tokenizers` 0.20.3. Pinned **0.34.4** instead — the oldest release that still
+  ships the `hf` command and satisfies both (`pip check` clean). The 2.x CLI
+  lives in a throwaway venv used only for the browser login; both read the same
+  token store at `~/.cache/huggingface/token`.
+- Logged in via the OAuth device flow (no token ever pasted into chat, printed,
+  logged or committed). `hf auth whoami` → **fariskishtah**.
+- Write access confirmed by creating
+  **`fariskishtah/fintriage-distilbert` (private)** — the model repo the Space
+  will pull weights from.
+- The Space itself is created at deploy time, private, once a checkpoint exists.
+  Nothing is published without explicit approval; free CPU tier only.
+
+### Application defect found and fixed
+Launching the app returned **HTTP 500 on every page load**:
+`TypeError: argument of type 'bool' is not iterable` in
+`gradio_client/utils.py:887`. Cause: `gr.File`'s `api_info` carries
+`meta.additionalProperties: false`, which gradio_client 1.5.2 cannot walk, and
+gradio 5.9.1 computes `api_info` for the index route so `show_api=False` does
+not avoid it. Fixed by upgrading to **gradio 5.50.0 / gradio_client 1.14.0**
+(`get_api_info()` now succeeds); pinned in `requirements.txt`,
+`deploy/requirements-space.txt` and the Space `sdk_version`.
+
+Also fixed: long paths in the model-missing banner pushed the page sideways at
+phone width. Notes, cards and tables now wrap or scroll inside themselves.
+
+### UI verified in a browser at 1280px
+Hero, degradation banner, all seven tabs, the real dataset tiles
+(162,421 / 124,328 / 12,435 / 5) and the batch upload controls all render. The
+app boots correctly with no checkpoint and says so, rather than crashing.
 
 ## NOT STARTED
 
-- [ ] `scripts/make_figures.py` (static figures for the README)
-- [ ] `tests/test_inference.py`, `tests/test_batch.py`, `tests/test_app.py`
-- [ ] Launch the app locally and inspect it, desktop and mobile widths
+- [ ] Pull the Kaggle artifacts and run select_model.py, then evaluate.py
 - [ ] README with real results
 - [ ] HF Space + live verification
 
