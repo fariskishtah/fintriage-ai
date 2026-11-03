@@ -142,13 +142,13 @@ Chosen on the **validation** split, not the test split: **0.68**, the lowest thr
 
 ## Live deployment
 
-Private Hugging Face Space: **https://huggingface.co/spaces/fariskishtah/fintriage-ai**
-(private — sign in as the owner to open it.)
+Live demo: **https://huggingface.co/spaces/fariskishtah/fintriage-ai**
+Model: **https://huggingface.co/fariskishtah/fintriage-distilbert**
 
 | | |
 |---|---|
 | Hardware | ZeroGPU (`zero-a10g`) |
-| Visibility | Private |
+| Visibility | Public |
 | Inference | CPU, ~45 ms per complaint |
 | Weights | Bundled in the Space over LFS (268 MB), so no token is needed at runtime |
 | Cost | None |
@@ -177,6 +177,10 @@ Checked against the running Space, not against the files that were uploaded.
 | Input validation | empty and too-short inputs rejected with clear messages |
 | Restart | model reloads, inference unchanged, all 6 model files persist |
 | Served CSS | brand tokens, `@media (max-width: 640px)` and the overflow fix all present |
+
+Also checked in a real browser against the **public** URL: a complaint returned
+*Mortgages and Loans* at 99.1%, matching the local value, and at 375 px the page
+reports `scrollWidth == innerWidth`, so there is no horizontal overflow.
 
 The live Space runs **torch 2.8.0** (ZeroGPU rejects 2.5.1), while training and
 evaluation used 2.5.1. The confidence difference that causes is at most

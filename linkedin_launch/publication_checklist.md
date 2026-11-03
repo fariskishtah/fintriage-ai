@@ -22,41 +22,43 @@
 |---|---|---|---|
 | 10 | INSTANT mention | **Blocked** | Organisation identified as INSTANT Software Solutions; LinkedIn page URL not verified. Insert via composer autocomplete |
 | 11 | Jana Hatem mention | **Blocked** | Role confirmed; profile URL not verified and deliberately not guessed. Insert via composer autocomplete |
-| 12 | GitHub visibility | **Private** | `github.com/fariskishtah/fintriage-ai`. Public readers cannot open it |
-| 13 | Hugging Face Space visibility | **Private** | `huggingface.co/spaces/fariskishtah/fintriage-ai`. Public readers cannot open it |
-| 14 | Model repo visibility | **Private** | `huggingface.co/fariskishtah/fintriage-distilbert` |
-| 15 | Link accessibility | **Decision needed** | See below |
-| 16 | Final approval | **Pending** | Nothing is published until you say so |
+| 12 | GitHub visibility | **Public** | Made public on your instruction. Full history audited first: no secrets, no credentials, no raw narratives, no weights in any commit |
+| 13 | Hugging Face Space visibility | **Public** | `RUNNING` on ZeroGPU |
+| 14 | Model repo visibility | **Public** | 268.8 MB checkpoint |
+| 15 | Link accessibility | **Verified** | All four URLs return 200 to an anonymous request |
+| 16 | Live check on the public URL | **Passed** | Real browser on the public Space: classification returned Mortgages and Loans at 99.1%, matching local. Mobile at 375 px: no horizontal overflow |
+| 17 | Final approval | **Pending** | Nothing is published to LinkedIn until you say so |
 
-## About the links
+## Links now in the post
 
-The current draft deliberately contains **no project links**, because all three
-repositories are private and a public audience would hit a 404. It stands on the
-screenshots and the results.
+```
+Live demo: https://huggingface.co/spaces/fariskishtah/fintriage-ai
+Code: https://github.com/fariskishtah/fintriage-ai
+Model: https://huggingface.co/fariskishtah/fintriage-distilbert
+```
 
-Two options:
+Each was checked with an unauthenticated request, which is what a reader gets.
 
-**A — keep everything private.** The draft is ready as written. Add a line such
-as "Happy to walk through the code and the evaluation protocol on request."
+## What going public exposed
 
-**B — make the repositories public.** Then add the links. This needs your
-explicit approval and some care:
+Audited before flipping, across the **entire git history**, not just the current
+files:
 
-- Review the GitHub repository before it goes public. It carries no weights, no
-  raw narratives and no credentials, but it is still your call.
-- Free accounts are limited to 2 ZeroGPU Spaces, and both are in use.
-- A public Space exposes the app and its bundled checkpoint to anyone with the
-  link.
+- No tokens, keys or credentials in any commit.
+- No `kaggle.json`, `.env`, `.pem` or similar ever committed.
+- No raw complaint narratives and no model weights in the repository.
+- The one data file published, `data/processed/split_ids.csv.gz`, holds only row
+  indices into the public Kaggle file plus label ids and split names. No text.
 
-**No visibility has been changed, and none will be without your explicit
-instruction.**
+The Space carries the 268 MB checkpoint, which is now downloadable by anyone, as
+is the model repository. That is the normal consequence of publishing a model
+and was the intent of making it public.
 
 ## Publication order
 
 1. Approve the post text.
-2. Decide on visibility (option A or B above).
-3. Open the LinkedIn composer and upload the five images **in filename order** —
+2. Open the LinkedIn composer and upload the five images **in filename order** —
    they are sequenced as a story: product → prediction → evidence →
    explainability → scale.
-4. Insert the two mentions via autocomplete and confirm each resolves.
-5. Publish.
+3. Insert the two mentions via autocomplete and confirm each resolves.
+4. Publish.

@@ -2,11 +2,15 @@
 
 Updated: 2026-11-03
 
-## Status: DEPLOYED AND VERIFIED LIVE
+## Status: PUBLIC, DEPLOYED AND VERIFIED LIVE
 
-Private Space: https://huggingface.co/spaces/fariskishtah/fintriage-ai — `RUNNING`
-GitHub: https://github.com/fariskishtah/fintriage-ai — private
-Model repo: https://huggingface.co/fariskishtah/fintriage-distilbert — private
+Space: https://huggingface.co/spaces/fariskishtah/fintriage-ai — public, `RUNNING`
+GitHub: https://github.com/fariskishtah/fintriage-ai — public
+Model repo: https://huggingface.co/fariskishtah/fintriage-distilbert — public
+
+Made public on the owner's explicit instruction, after auditing the entire git
+history: no secrets, credentials, raw narratives or weights in any commit. All
+four URLs verified reachable by an unauthenticated request.
 
 ## Final results — held-out test, 12,435 complaints, read exactly once
 
@@ -73,14 +77,15 @@ uploaded files.
 
 ## Known limitations
 
-- The README has the seven generated result figures but no application
-  screenshots.
-- Live **pixel** QA was not possible: the Space is private and the automated
-  browser has no Hugging Face session. Functional behaviour and the served
-  CSS were verified live; the rendering of the identical bundle was verified
-  locally at 1280 px and 375 px.
+- The README has the seven generated result figures; application screenshots
+  live in `linkedin_launch/screenshots/`.
+- Live pixel QA is now done: the public Space was driven in a real browser,
+  returning *Mortgages and Loans* at 99.1%, with no horizontal overflow at
+  375 px.
 - On the first request after a cold start one reading came back 98.0% where
   steady state is 98.2%. Category unchanged and far from the 0.68 threshold.
 - English only, five product families, one label per complaint.
 - Confidence is raw softmax, not calibrated (ECE 0.0415).
 - Free ZeroGPU accounts are limited to 2 Spaces; both slots are now used.
+- The checkpoint is now downloadable by anyone, which is the intended
+  consequence of publishing the model.

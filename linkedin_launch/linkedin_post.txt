@@ -25,4 +25,8 @@ Built with PyTorch and Hugging Face Transformers, fine-tuned on a Kaggle GPU, de
 
 Thank you to the INSTANT AI & Data Science Training Program and to my instructor, Eng. Jana Hatem, whose guidance and structure turned deep learning concepts into something I could actually build and defend.
 
+Live demo: https://huggingface.co/spaces/fariskishtah/fintriage-ai
+Code: https://github.com/fariskishtah/fintriage-ai
+Model: https://huggingface.co/fariskishtah/fintriage-distilbert
+
 Three things I am taking with me. Data quality decides your ceiling long before architecture does — the near-duplicate work cost more than the fine-tuning and mattered more. A model is only as trustworthy as the evaluation protocol behind it, which is why the test set was opened exactly once. And shipping is its own discipline: the gap between a trained checkpoint and an application someone can use is wider than it looks.

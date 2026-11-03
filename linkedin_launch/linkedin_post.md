@@ -44,7 +44,7 @@ Three things I am taking with me. Data quality decides your ceiling long before 
 
 ## Length
 
-465 words. Long for LinkedIn but appropriate for a technical portfolio post;
+476 words. Long for LinkedIn but appropriate for a technical portfolio post;
 the first three lines carry the hook before the "see more" fold.
 
 ## Claims and where each comes from
@@ -61,8 +61,19 @@ the first three lines carry the hook before the "see more" fold.
 
 Every figure was checked against these files before this draft was written.
 
+## Links in the post
+
+All three are public and were checked anonymously (no token, the way a stranger
+sees them):
+
+| Link | Anonymous status |
+|---|---|
+| https://huggingface.co/spaces/fariskishtah/fintriage-ai | 200 |
+| https://fariskishtah-fintriage-ai.hf.space/ | 200, Space RUNNING |
+| https://github.com/fariskishtah/fintriage-ai | 200 |
+| https://huggingface.co/fariskishtah/fintriage-distilbert | public (config.json resolves 200) |
+
 ## Deliberately not claimed
 
-- No public demo link (all three repositories are private).
 - No claim of production use, financial decision-making, or advice.
 - No claim that classification is perfect or calibrated.
