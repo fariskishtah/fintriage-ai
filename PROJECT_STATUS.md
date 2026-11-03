@@ -49,21 +49,51 @@ Updated: 2026-11-03
 `src/explainability/integrated_gradients.py` · `src/{app_theme,ui_blocks,charts}.py` ·
 `app.py` · `notebooks/kaggle_train_distilbert.ipynb`
 
+### Split membership frozen and verified
+- `data/processed/split_ids.csv.gz` (637 KB, committed) holds the row-level split
+  assignment keyed by position in the raw CSV. `scripts/freeze_splits.py` proved
+  it reconstructs the exact parquet files the recurrent models trained on —
+  per-split content SHA-256 **train `87b13eec…`, val `ce29e921…`, test
+  `816bd218…`, all MATCH**.
+- `scripts/materialize_splits.py` rebuilds those splits anywhere: it verifies the
+  raw CSV's SHA-256 first, applies only the normalisation cleaning applied,
+  checks the label mapping, and refuses to write if any fingerprint disagrees.
+  Verified: 0 duplicate groups span splits, 0 narratives shared train/test.
+
+### GitHub
+- **`https://github.com/fariskishtah/fintriage-ai` — PRIVATE**, 2 commits.
+  Contains code, configs, docs and the frozen manifest only: no raw narratives,
+  no trained weights, no credentials (912 KB total).
+
+### Kaggle GPU path ready
+- `notebooks/kaggle_train_distilbert.ipynb` (29 cells) rebuilds the frozen splits
+  rather than re-deriving them, asserts the dataset hash and all three
+  fingerprints before spending GPU time, smoke-runs on 512 examples, deletes the
+  smoke artifacts, then fine-tunes. Needs no secrets when the code is attached as
+  a dataset.
+- `scripts/kaggle_launch.py` drives it headlessly: uploads the code as a private
+  Kaggle dataset, pushes the kernel with GPU + both datasets attached, polls, and
+  extracts the artifacts back into the project. It refuses to upload anything
+  credential-shaped.
+
 ## IN PROGRESS
 
-- **SimpleRNN / LSTM / GRU training** running locally on MPS, up to 8 epochs each
-  with early stopping on validation macro F1. Log: `/tmp/rnn_train.log`.
+- **SimpleRNN / LSTM / GRU training** on MPS, up to 8 epochs each, early stopping
+  on validation macro F1. Log: `/tmp/rnn_train.log`.
+  - SimpleRNN **done**: best val macro F1 **0.7486**, 1,179 s, 8 epochs, 2.58 M params
+  - LSTM: running
+  - GRU: queued
 
-## BLOCKED
+## BLOCKED — one action needed
 
-- **DistilBERT fine-tuning.** Benchmarked at **49.6 s/step** on M2 MPS
-  (batch 32, max_len 256) → **~86 hours** for the 2-epoch run. The 8 GB unified
-  memory is the bottleneck. Not viable locally.
-  **Unblocker:** run `notebooks/kaggle_train_distilbert.ipynb` on a Kaggle T4
-  (well under an hour). It clones this repo and runs the same scripts, so the
-  splits are byte-identical and the comparison stays fair. Needs either Kaggle
-  API credentials here (`~/.kaggle/kaggle.json`) or for the notebook to be run
-  in the browser.
+- **DistilBERT fine-tuning.** 49.6 s/step on M2 MPS → ~86 h locally. Everything
+  for the Kaggle run is built and pushed; the only thing missing is Kaggle API
+  credentials on this machine:
+  `~/.kaggle/kaggle.json` from https://www.kaggle.com/settings → API → Create New
+  Token. Once it is in place, `python scripts/kaggle_launch.py --push` runs the
+  whole thing with no further interaction.
+- **Hugging Face Spaces deployment.** Needs a write-scoped `HF_TOKEN`. The local
+  `hf` CLI is broken (`~/.local/bin/hf` points at a deleted interpreter).
 - **Hugging Face Spaces deployment.** Needs a write-scoped `HF_TOKEN`. The local
   `hf` CLI is broken (`~/.local/bin/hf` points at a deleted interpreter).
 
@@ -73,7 +103,6 @@ Updated: 2026-11-03
 - [ ] `tests/test_inference.py`, `tests/test_batch.py`, `tests/test_app.py`
 - [ ] Launch the app locally and inspect it, desktop and mobile widths
 - [ ] README with real results
-- [ ] GitHub repository (`gh` is authenticated as `fariskishtah`)
 - [ ] HF Space + live verification
 
 ## Honest status
