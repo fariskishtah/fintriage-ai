@@ -140,6 +140,48 @@ Chosen on the **validation** split, not the test split: **0.68**, the lowest thr
 
 <!-- RESULTS:END -->
 
+## Live deployment
+
+Private Hugging Face Space: **https://huggingface.co/spaces/fariskishtah/fintriage-ai**
+(private — sign in as the owner to open it.)
+
+| | |
+|---|---|
+| Hardware | ZeroGPU (`zero-a10g`) |
+| Visibility | Private |
+| Inference | CPU, ~45 ms per complaint |
+| Weights | Bundled in the Space over LFS (268 MB), so no token is needed at runtime |
+| Cost | None |
+
+`cpu-basic` is not an option here: a **private** Gradio Space on it returns
+HTTP 402 and requires PRO. ZeroGPU is the only flavour a free account can host a
+private Gradio Space on, so it is the hosting tier rather than a performance
+choice — the app never reserves a GPU slice, because CPU inference is already
+fast enough and is the path that was measured.
+
+### Verified live
+
+Checked against the running Space, not against the files that were uploaded.
+
+| Check | Result |
+|---|---|
+| Build | `RUNNING` |
+| All five categories | predicted correctly from the live endpoint |
+| Live vs local confidence | max difference **0.048 pp** across six examples |
+| Top-3 | returned live |
+| Review threshold | the ambiguous example returns 53.3% → *Manual Review Recommended* |
+| Batch CSV | 7 rows uploaded → 5 classified, 2 skipped, download returned |
+| Analytics | real session counts, 5 of 5 categories |
+| Human override | recorded, dashboard reflects it |
+| Explainability | Integrated Gradients, 19 token attributions |
+| Input validation | empty and too-short inputs rejected with clear messages |
+| Restart | model reloads, inference unchanged, all 6 model files persist |
+| Served CSS | brand tokens, `@media (max-width: 640px)` and the overflow fix all present |
+
+The live Space runs **torch 2.8.0** (ZeroGPU rejects 2.5.1), while training and
+evaluation used 2.5.1. The confidence difference that causes is at most
+0.048 pp, which is below the UI's own display granularity.
+
 ## Reproduce
 
 ```bash

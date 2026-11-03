@@ -2,24 +2,13 @@
 
 Updated: 2026-11-03
 
-## COMPLETED
+## Status: DEPLOYED AND VERIFIED LIVE
 
-### Data
-- Kaggle `shashwatwork/consume-complaints-dataset-fo-nlp`, `complaints_processed.csv`,
-  **162,421 rows**, SHA-256 `a120ac8450cb3839…`. Public-domain CFPB source.
-- Cleaned to **124,328** (nulls 10, exact duplicates 37,939, under 3 tokens 144,
-  850 truncated at 600 tokens). Nulls and exact-duplicate counts match the
-  reference project exactly.
-- **9,844 near-duplicate groups over 30,752 rows (24.7%)** grouped by MinHash/LSH
-  and kept inside one split each.
-- Splits **99,458 / 12,435 / 12,435**, stratified 80/10/10, seed 42, group-aware.
-  Frozen to `data/processed/split_ids.csv.gz` and fingerprinted. Zero narratives
-  shared across splits; zero duplicate groups spanning splits.
+Private Space: https://huggingface.co/spaces/fariskishtah/fintriage-ai — `RUNNING`
+GitHub: https://github.com/fariskishtah/fintriage-ai — private
+Model repo: https://huggingface.co/fariskishtah/fintriage-distilbert — private
 
-### Models — all four trained, one Kaggle T4 session
-Promoted only after `scripts/verify_artifacts.py` passed every provenance check.
-
-**Held-out test, 12,435 complaints, read exactly once:**
+## Final results — held-out test, 12,435 complaints, read exactly once
 
 | Model | Accuracy | Macro F1 | Weighted F1 | Train | CPU p50 | Size | Params |
 |---|---|---|---|---|---|---|---|
@@ -28,68 +17,70 @@ Promoted only after `scripts/verify_artifacts.py` passed every provenance check.
 | GRU | 0.8220 | 0.8154 | 0.8242 | 54 s | 2 ms | 11 MB | 2,601,733 |
 | **DistilBERT** | **0.8535** | **0.8472** | **0.8549** | 4,588 s | 45 ms | 269 MB | 66,957,317 |
 
-- Production model **DistilBERT**, chosen on validation macro F1 (0.84376) before
-  the test split was read.
-- Review threshold **0.68**, calibrated on validation: auto-routes **87.3%** at
-  **90.1%** accuracy, ECE **0.0415**.
-- Reproducibility (validation only), local M2 MPS vs Kaggle T4:
-  SimpleRNN +0.0002, LSTM −0.0047, GRU +0.0005.
+Production model **DistilBERT**, selected on validation macro F1 (0.84376)
+before the test split was read. Review threshold **0.68**, calibrated on
+validation: auto-routes 87.3% at 90.1% accuracy, ECE 0.0415.
 
-### Application — verified against the real model
-All seven tabs work. Verified in a browser:
-- Live classification: Debt Collection at 98.2%, correct routing badge, top-3,
-  calibration caveat.
-- Batch CSV with the real model: all five labelled complaints classified into
-  their intended categories; empty/short rows skipped with a warning.
-- Session analytics: real counts, no fabricated data.
-- Explainability: real Integrated Gradients; top tokens `debt, collection,
-  agency, calling, owe`.
-- Model Performance: real metrics, DistilBERT marked PRODUCTION.
-- Mobile at 375 px: `scrollWidth == innerWidth`, no horizontal overflow.
+All four trained and evaluated in one Kaggle T4 session and promoted only after
+`scripts/verify_artifacts.py` passed: identical split hashes, identical label
+map, all checkpoints loadable, selection free of any test metric, test split
+read once. Local M2 MPS runs kept in `artifacts_local_mps/` as a validation-only
+reproducibility record: SimpleRNN +0.0002, LSTM −0.0047, GRU +0.0005.
 
-### Tests
+## Tests
+
 **121 passing, 0 skipped, 0 failing.**
 
-### Bugs found by testing, and fixed
+## Live verification
+
+Performed against the running Space through its own endpoints, not against the
+uploaded files.
+
+- All five categories predicted correctly live.
+- Live vs local confidence: max difference **0.048 pp** over six examples
+  (live torch 2.8.0 vs local 2.5.1).
+- Top-3, confidence, routing badge: correct. The ambiguous example returns
+  53.3% and is routed to *Manual Review Recommended*.
+- Batch CSV: 7 rows uploaded → 5 classified, 2 skipped, results file returned.
+- Analytics: real session counts, 5 of 5 categories, overrides reflected.
+- Explainability: Integrated Gradients, 19 token attributions.
+- Validation: empty and too-short inputs rejected with clear messages.
+- Restart: model reloads, inference unchanged, all 6 model files persist.
+- Served CSS carries the brand tokens, the 640 px breakpoint and the overflow fix.
+
+## Bugs found by testing, and fixed
+
 1. **HTTP 500 on every page load** — `gr.File`'s api_info has
    `meta.additionalProperties: false`, which gradio_client 1.5.2 cannot walk.
    Fixed by upgrading to gradio 5.50.0 / gradio_client 1.14.0.
 2. **Empty CSV cells classified as the string "nan"** — `.astype(str)` turned
    NaN into `"nan"`, three characters, so it passed the length check. Fixed,
-   two regression tests added.
-3. **Space bundle would not have booted** — the deploy script prepended an
-   import above `from __future__ import annotations`, a SyntaxError. Fixed; the
-   staged app.py is now AST-parsed before upload.
-4. **Kaggle artifact pull would have overwritten the local runs** — `--pull` did
-   `extractall(ROOT)`, which would have mixed M2 and T4 timings in one table.
-   Now stages to `artifacts_kaggle/` behind an explicit verification gate.
+   two regression tests.
+3. **Space bundle would not boot** — the deploy script prepended an import above
+   `from __future__ import annotations`. Fixed; staged app.py is AST-parsed
+   before upload.
+4. **Artifact pull would have overwritten the local runs** — `--pull` did
+   `extractall(ROOT)`, mixing M2 and T4 timings in one table. Now staged behind
+   a verification gate.
+5. **ZeroGPU rejected torch 2.5.1** — `CONFIG_ERROR`. ZeroGPU bundle moved to
+   2.8.0; the project and the cpu-basic bundle stay on 2.5.1.
+6. **GPU warm-up wasted quota** — checked the `spaces` package: it enforces
+   nothing at import, so a ZeroGPU Space serves fine with no `@spaces.GPU` call.
+   The warm-up was reserving an A10G slice on every boot for CPU-only work.
+   Removed.
+7. **Broken upload retry** — the retry loop piped to `tail`, so it read `tail`'s
+   exit code and gave up after one failure. Fixed; upload split into two stages.
 
-### Repositories
-- GitHub **`fariskishtah/fintriage-ai` — PRIVATE**, synced. No weights, no raw
-  narratives, no credentials tracked.
-- Hugging Face model repo **`fariskishtah/fintriage-distilbert` — PRIVATE**,
-  268.8 MB uploaded (safetensors + tokenizer + config).
+## Known limitations
 
-## BLOCKED — one decision needed
-
-**The Hugging Face Space cannot be created privately on the free tier.**
-`create_repo` returned HTTP 402:
-
-> Static Spaces are free for everyone, but hosting Gradio and Docker Spaces on
-> free cpu-basic requires a PRO subscription.
-
-No Space was created; nothing is public.
-
-The deployment bundle itself is **verified working**: staged, run with no local
-`artifacts/`, it pulled the weights from the private Hub repo, loaded the model,
-predicted `Debt Collection` at 0.9801, and built the Gradio Blocks with a valid
-api_info. The only missing piece is somewhere to host it.
-
-Options, all requiring your decision:
-1. Make the Space **public** (free). Needs explicit approval.
-2. **HF PRO** (~$9/month) to keep it private. A paid charge; needs approval.
-3. Leave it unhosted. The app runs locally and is fully verified.
-
-## NOT DONE
-- Live public URL verification (blocked by the above).
-- README screenshots (the figures are in; app screenshots pending a decision).
+- The README has the seven generated result figures but no application
+  screenshots.
+- Live **pixel** QA was not possible: the Space is private and the automated
+  browser has no Hugging Face session. Functional behaviour and the served
+  CSS were verified live; the rendering of the identical bundle was verified
+  locally at 1280 px and 375 px.
+- On the first request after a cold start one reading came back 98.0% where
+  steady state is 98.2%. Category unchanged and far from the 0.68 threshold.
+- English only, five product families, one label per complaint.
+- Confidence is raw softmax, not calibrated (ECE 0.0415).
+- Free ZeroGPU accounts are limited to 2 Spaces; both slots are now used.
