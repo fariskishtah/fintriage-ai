@@ -63,6 +63,12 @@ All four in PyTorch, class-weighted loss (weights from the training split only),
 early stopping on validation macro F1. The recurrent models mask padding by
 packing sequences. Hyperparameters live in `configs/config.yaml`.
 
+<!-- RESULTS:START -->
+
+_Results are written here by `scripts/update_readme.py` once the models have been evaluated._
+
+<!-- RESULTS:END -->
+
 ## Reproduce
 
 ```bash
