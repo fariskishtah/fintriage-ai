@@ -19,3 +19,4 @@ gradio_cached_examples/
 *.log
 artifacts_local_mps/
 artifacts_kaggle/
+linkedin_assets/raw/

@@ -702,8 +702,9 @@ def build() -> gr.Blocks:
                 gr.HTML(
                     '<div class="ft-card"><h3>Which tokens moved the prediction</h3>'
                     '<p class="ft-hint">Layer Integrated Gradients over the embedding '
-                    "layer of the deployed model. Blue is support for the category, red "
-                    "is evidence against it. This shows sensitivity, not reasoning.</p></div>"
+                    "layer of the deployed model. The stronger a token is shaded, the "
+                    "more the prediction moved with it. This shows sensitivity, not "
+                    "reasoning.</p></div>"
                 )
                 explain_text = gr.Textbox(
                     lines=8,
