@@ -17,3 +17,5 @@ artifacts/*
 .pytest_cache/
 gradio_cached_examples/
 *.log
+artifacts_local_mps/
+artifacts_kaggle/

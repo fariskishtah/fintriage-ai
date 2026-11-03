@@ -151,6 +151,13 @@ def main() -> int:
         kaggle("kernels", "status", f"{user}/{KERNEL}", check=False)
 
     if args.pull:
+        # Extract to a staging directory, never over the project. The Kaggle run
+        # also trains its own copies of the recurrent models; writing those
+        # straight into artifacts/ would silently replace the local runs and mix
+        # two hardware profiles in one comparison table. Promotion is a separate,
+        # explicit step (scripts/verify_artifacts.py --promote).
+        staging = ROOT / "artifacts_kaggle"
+        staging.mkdir(exist_ok=True)
         out = Path(tempfile.mkdtemp(prefix="fintriage-out-"))
         kaggle("kernels", "output", f"{user}/{KERNEL}", "-p", str(out))
         archive = out / "fintriage_artifacts.zip"
@@ -158,14 +165,18 @@ def main() -> int:
             found = list(out.rglob("fintriage_artifacts.zip"))
             archive = found[0] if found else None
         if archive is None:
-            print(f"no fintriage_artifacts.zip in the kernel output; see {out}", file=sys.stderr)
+            print(
+                f"no fintriage_artifacts.zip in the kernel output. The run may have "
+                f"failed before the packaging cell; the raw output is in {out}",
+                file=sys.stderr,
+            )
             return 1
         with zipfile.ZipFile(archive) as zf:
-            zf.extractall(ROOT)
-        print(f"extracted {archive.name} into {ROOT}")
-        comparison = ROOT / "results" / "metrics" / "model_comparison.csv"
-        if comparison.exists():
-            print("\n" + comparison.read_text())
+            zf.extractall(staging)
+        print(f"extracted {archive.name} -> {staging}")
+        print("\nNothing in the project was modified. Next:")
+        print("  python scripts/verify_artifacts.py            # check provenance")
+        print("  python scripts/verify_artifacts.py --promote  # adopt them")
     return 0
 
 

@@ -1,0 +1,66 @@
+{
+  "model": "GRU",
+  "device": "mps",
+  "trainable_parameters": 2601733,
+  "train_time_sec": 2182.9,
+  "epochs_run": 5,
+  "best_val_f1_macro": 0.82023,
+  "class_weights": {
+    "credit_card": 1.659,
+    "credit_reporting": 0.4429,
+    "debt_collection": 1.183,
+    "mortgages_and_loans": 1.3281,
+    "retail_banking": 1.8483
+  },
+  "hyperparameters": {
+    "vocab_size": 20000,
+    "max_len": 200,
+    "embed_dim": 128,
+    "hidden_dim": 64,
+    "dropout": 0.4,
+    "dense_dim": 64,
+    "batch_size": 128,
+    "epochs": 8,
+    "lr": 0.001,
+    "early_stopping_patience": 2,
+    "grad_clip": 1.0
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.96188,
+      "val_loss": 0.55845,
+      "val_accuracy": 0.78906,
+      "val_f1_macro": 0.78146
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.54609,
+      "val_loss": 0.48591,
+      "val_accuracy": 0.82461,
+      "val_f1_macro": 0.8148
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.46857,
+      "val_loss": 0.46681,
+      "val_accuracy": 0.83,
+      "val_f1_macro": 0.82023
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.41984,
+      "val_loss": 0.46917,
+      "val_accuracy": 0.82035,
+      "val_f1_macro": 0.81407
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.38433,
+      "val_loss": 0.47516,
+      "val_accuracy": 0.82155,
+      "val_f1_macro": 0.81204
+    }
+  ],
+  "smoke_run": false
+}
