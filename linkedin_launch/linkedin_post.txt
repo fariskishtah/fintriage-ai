@@ -2,16 +2,18 @@ From raw consumer complaints to a deployed deep learning system.
 
 FinTriage AI reads a written financial complaint and predicts which product family it belongs to — credit card, credit reporting, debt collection, mortgages and loans, or retail banking — so it reaches the right team instead of sitting in a queue. I built it as Sprint 3 of the INSTANT AI & Data Science Training program.
 
-The data work decided the outcome. From 162,421 CFPB complaints I kept 124,328 after removing nulls, exact duplicates and text too short to carry signal. The step that changed my numbers: 9,844 groups covering 24.7% of the corpus were near-duplicates — not identical, but close enough for a model to memorise one and "recognise" the other across a split. I grouped them with MinHash and LSH, kept each group inside one split, and froze the splits to a hashed row-level manifest, so all four models saw provably identical examples.
+The data work decided the outcome. From 162,421 CFPB complaints I kept 124,328 after removing nulls, exact duplicates and text too short to carry signal. The step that changed my numbers: 9,844 groups covering 24.7% of the corpus were near-duplicates — not identical, but close enough for a model to memorise one and recognise the other across a split. I grouped them with MinHash and LSH, kept each group inside one split, and froze the splits to a hashed row-level manifest, so all four models saw provably identical examples.
 
 Four architectures on that data: SimpleRNN, LSTM, GRU, and a fine-tuned distilbert-base-uncased.
 
-Held-out test set of 12,435 complaints, opened once:
+Held-out test set of 12,435 complaints, opened once.
 
-SimpleRNN — 76.24% accuracy, 74.15% macro F1
-LSTM — 82.45%, 81.69%
-GRU — 82.20%, 81.54%
-DistilBERT — 85.35%, 84.72%
+Model — Accuracy | Macro F1
+
+SimpleRNN — 76.24% | 74.15%
+LSTM — 82.45% | 81.69%
+GRU — 82.20% | 81.54%
+DistilBERT — 85.35% | 84.72%
 
 DistilBERT went to production, selected on validation performance before the test set was touched.
 
@@ -25,3 +27,5 @@ Code: https://github.com/fariskishtah/fintriage-ai
 Special thanks to INSTANT Software Solutions and Eng. Jana Hatem for the guidance and the opportunity throughout the AI & Data Science Training program. It turned deep learning concepts into a complete project I could build, evaluate honestly, and ship.
 
 Data quality set the ceiling long before architecture did, and shipping turned out to be its own discipline.
+
+#MachineLearning #DeepLearning #NLP #DataScience #Transformers #MLOps
