@@ -1,0 +1,41 @@
+{
+  "selected_model": "DistilBERT",
+  "decision_basis": "highest validation macro F1, then size and latency",
+  "ranking": [
+    {
+      "model": "DistilBERT",
+      "val_f1_macro": 0.84376,
+      "train_time_sec": 4587.5,
+      "trainable_parameters": 66957317,
+      "artifact_size_mb": 269.14
+    },
+    {
+      "model": "GRU",
+      "val_f1_macro": 0.82072,
+      "train_time_sec": 53.7,
+      "trainable_parameters": 2601733,
+      "artifact_size_mb": 11.02
+    },
+    {
+      "model": "LSTM",
+      "val_f1_macro": 0.81004,
+      "train_time_sec": 76.1,
+      "trainable_parameters": 2614149,
+      "artifact_size_mb": 11.07
+    },
+    {
+      "model": "SimpleRNN",
+      "val_f1_macro": 0.74881,
+      "train_time_sec": 85.9,
+      "trainable_parameters": 2576901,
+      "artifact_size_mb": 10.92
+    }
+  ],
+  "labels": [
+    "credit_card",
+    "credit_reporting",
+    "debt_collection",
+    "mortgages_and_loans",
+    "retail_banking"
+  ]
+}

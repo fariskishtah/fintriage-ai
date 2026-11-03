@@ -1,0 +1,5 @@
+model,accuracy,precision_macro,recall_macro,f1_macro,f1_weighted,train_time_sec,cpu_latency_p50_ms,artifact_size_mb,trainable_parameters
+SimpleRNN,0.7624,0.7301,0.7584,0.7415,0.7664,85.9,1.11,10.92,2576901
+LSTM,0.8245,0.7997,0.8403,0.8169,0.8267,76.1,2.05,11.07,2614149
+GRU,0.822,0.798,0.8394,0.8154,0.8242,53.7,1.96,11.02,2601733
+DistilBERT,0.8535,0.8323,0.8658,0.8472,0.8549,4587.5,44.79,269.14,66957317

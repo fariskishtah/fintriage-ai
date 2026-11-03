@@ -1,0 +1,8 @@
+{
+  "comparison_source": "Kaggle kernel fariskishtah/fintriage-distilbert-training",
+  "why": "All four models trained and evaluated in one GPU session so training times and CPU latencies are measured on the same machine.",
+  "local_mps_runs_preserved_at": "artifacts_local_mps",
+  "local_runs_used_for": "validation-only reproducibility check; never in the table",
+  "test_set_evaluations": 1,
+  "split_fingerprints_verified": true
+}

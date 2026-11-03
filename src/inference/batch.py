@@ -115,8 +115,11 @@ def classify_frame(
     if column not in df.columns:
         raise BatchError(f"Column '{column}' is not in the file: {list(df.columns)}")
 
-    texts = df[column].astype(str).str.strip()
-    valid = texts.str.len() >= 3
+    # An empty CSV cell arrives as NaN; .astype(str) would turn it into the
+    # literal "nan", which is three characters and would sail past the length
+    # check and get classified. Drop the missing values before converting.
+    texts = df[column].where(df[column].notna(), "").astype(str).str.strip()
+    valid = (texts.str.len() >= 3) & (texts.str.lower() != "nan")
     n_skipped = int((~valid).sum())
     if n_skipped:
         warnings.append(f"{n_skipped:,} row(s) had empty or too-short text and were skipped.")

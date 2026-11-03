@@ -1,0 +1,44 @@
+{
+  "model": "DistilBERT",
+  "base_checkpoint": "distilbert-base-uncased",
+  "device": "cuda",
+  "trainable_parameters": 66957317,
+  "train_time_sec": 4587.5,
+  "epochs_run": 2,
+  "best_val_f1_macro": 0.84376,
+  "class_weights": {
+    "credit_card": 1.659,
+    "credit_reporting": 0.4429,
+    "debt_collection": 1.183,
+    "mortgages_and_loans": 1.3281,
+    "retail_banking": 1.8483
+  },
+  "hyperparameters": {
+    "model_name": "distilbert-base-uncased",
+    "max_len": 256,
+    "batch_size": 32,
+    "eval_batch_size": 64,
+    "epochs": 2,
+    "lr": 3e-05,
+    "weight_decay": 0.01,
+    "warmup_ratio": 0.06,
+    "grad_clip": 1.0
+  },
+  "smoke_run": false,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.54041,
+      "val_loss": 0.41191,
+      "val_accuracy": 0.83064,
+      "val_f1_macro": 0.82544
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.34447,
+      "val_loss": 0.39525,
+      "val_accuracy": 0.85123,
+      "val_f1_macro": 0.84376
+    }
+  ]
+}

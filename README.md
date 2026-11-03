@@ -6,10 +6,6 @@ Classifies English-language consumer financial complaints into five product
 families and routes them, with a confidence-based recommendation for when a
 human should look instead.
 
-> ⚠️ **Results pending.** This README is updated with real measured metrics once
-> all four models finish training. Nothing in this repository reports a metric we
-> have not produced ourselves. Current state: `PROJECT_STATUS.md`.
-
 ## Categories
 
 `credit_card` · `credit_reporting` · `debt_collection` · `mortgages_and_loans` · `retail_banking`
@@ -65,7 +61,82 @@ packing sequences. Hyperparameters live in `configs/config.yaml`.
 
 <!-- RESULTS:START -->
 
-_Results are written here by `scripts/update_readme.py` once the models have been evaluated._
+## Results
+
+All four models evaluated on the same held-out test split of **12,435 complaints**, never seen during training or model selection. Every number below came from our own runs.
+
+| Model | Accuracy | Precision (macro) | Recall (macro) | **Macro F1** | Weighted F1 | Train time | CPU latency p50 | Size | Params |
+|---|---|---|---|---|---|---|---|---|---|
+| SimpleRNN | 0.7624 | 0.7301 | 0.7584 | 0.7415 | 0.7664 | 86 s | 1 ms | 11 MB | 2,576,901 |
+| LSTM | 0.8245 | 0.7997 | 0.8403 | 0.8169 | 0.8267 | 76 s | 2 ms | 11 MB | 2,614,149 |
+| GRU | 0.8220 | 0.7980 | 0.8394 | 0.8154 | 0.8242 | 54 s | 2 ms | 11 MB | 2,601,733 |
+| **DistilBERT** | 0.8535 | 0.8323 | 0.8658 | **0.8472** | 0.8549 | 4,588 s | 45 ms | 269 MB | 66,957,317 |
+
+**Production model: DistilBERT** — selected on validation macro F1 before the test split was read. highest validation macro F1, then size and latency.
+
+### Against the project that inspired this one
+
+The reference implementation reports the macro F1 values below. Ours are not expected to match: we remove near-duplicate narratives across splits, which that protocol does not, so a slice of what it scores is memorisation rather than generalisation. The comparison is here for honesty, not as a claim.
+
+| Model | Reference (published) | Ours | Difference |
+|---|---|---|---|
+| SimpleRNN | 0.7731 | 0.7415 | -0.0316 |
+| LSTM | 0.8122 | 0.8169 | +0.0047 |
+| GRU | 0.8257 | 0.8154 | -0.0103 |
+| DistilBERT | 0.8433 | 0.8472 | +0.0039 |
+
+### Per-class performance — DistilBERT
+
+| Category | Precision | Recall | F1 | Support |
+|---|---|---|---|---|
+| Credit Card | 0.7784 | 0.8499 | 0.8126 | 1,492 |
+| Credit Reporting | 0.9334 | 0.8307 | 0.8791 | 5,618 |
+| Debt Collection | 0.7484 | 0.8429 | 0.7929 | 2,107 |
+| Mortgages and Loans | 0.8229 | 0.8975 | 0.8586 | 1,874 |
+| Retail Banking | 0.8783 | 0.9077 | 0.8928 | 1,344 |
+
+### Human-review threshold
+
+Chosen on the **validation** split, not the test split: **0.68**, the lowest threshold with >=90% accuracy on the auto-routed slice.
+
+| | |
+|---|---|
+| Routed automatically | 87.3% of complaints |
+| Accuracy on that slice | 90.1% |
+| Sent to manual review | 12.7% |
+| Expected calibration error | 0.0415 |
+
+> Confidence values are raw softmax outputs, **not calibrated probabilities**. The ECE above is how far they sit from observed accuracy. The app presents confidence as a routing signal, never as a guarantee of correctness.
+
+### Figures
+
+**Accuracy and macro F1 across the four architectures**
+
+![Accuracy and macro F1 across the four architectures](results/figures/model_comparison.png)
+
+**Confusion matrices, row-normalised**
+
+![Confusion matrices, row-normalised](results/figures/confusion_matrices.png)
+
+**Per-class F1**
+
+![Per-class F1](results/figures/per_class_f1.png)
+
+**Validation loss and macro F1 per epoch**
+
+![Validation loss and macro F1 per epoch](results/figures/training_curves.png)
+
+**Latency against model size**
+
+![Latency against model size](results/figures/latency_vs_size.png)
+
+**Threshold sweep on the validation split**
+
+![Threshold sweep on the validation split](results/figures/review_threshold.png)
+
+**Class distribution after cleaning**
+
+![Class distribution after cleaning](results/figures/class_distribution.png)
 
 <!-- RESULTS:END -->
 

@@ -1,0 +1,92 @@
+{
+  "accuracy": 0.8219541616405308,
+  "precision_macro": 0.7979896893919094,
+  "recall_macro": 0.8393914458869718,
+  "f1_macro": 0.8153706288181606,
+  "precision_weighted": 0.834681751043687,
+  "recall_weighted": 0.8219541616405308,
+  "f1_weighted": 0.824217156686427,
+  "per_class": {
+    "credit_card": {
+      "precision": 0.7246963562753036,
+      "recall": 0.8398123324396782,
+      "f1": 0.778019248680534,
+      "support": 1492
+    },
+    "credit_reporting": {
+      "precision": 0.9251984956122022,
+      "recall": 0.7881808472766109,
+      "f1": 0.8512110726643599,
+      "support": 5618
+    },
+    "debt_collection": {
+      "precision": 0.6967741935483871,
+      "recall": 0.8201233981964879,
+      "f1": 0.7534336167429693,
+      "support": 2107
+    },
+    "mortgages_and_loans": {
+      "precision": 0.7992164544564153,
+      "recall": 0.8708644610458911,
+      "f1": 0.8335035750766088,
+      "support": 1874
+    },
+    "retail_banking": {
+      "precision": 0.844062947067239,
+      "recall": 0.8779761904761905,
+      "f1": 0.8606856309263311,
+      "support": 1344
+    }
+  },
+  "confusion_matrix": [
+    [
+      1253,
+      66,
+      45,
+      23,
+      105
+    ],
+    [
+      248,
+      4428,
+      629,
+      273,
+      40
+    ],
+    [
+      85,
+      178,
+      1728,
+      97,
+      19
+    ],
+    [
+      31,
+      100,
+      57,
+      1632,
+      54
+    ],
+    [
+      112,
+      14,
+      21,
+      17,
+      1180
+    ]
+  ],
+  "n_samples": 12435,
+  "model": "GRU",
+  "trainable_parameters": 2601733,
+  "train_time_sec": 53.7,
+  "train_device": "cuda",
+  "epochs_run": 5,
+  "best_val_f1_macro": 0.82072,
+  "artifact_size_mb": 11.02,
+  "cpu_latency": {
+    "mean_ms": 2.355437300017608,
+    "p50_ms": 1.9645535003292025,
+    "p95_ms": 5.178484950056372,
+    "repeats": 30
+  }
+}

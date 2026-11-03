@@ -162,6 +162,22 @@ class TestClassifying:
             classify_frame(pd.DataFrame({"narrative": [LONG]}), StubPredictor(),
                            text_column="missing")
 
+    def test_missing_cells_are_skipped_not_classified_as_nan(self):
+        """An empty CSV cell reads as NaN; str(NaN) is "nan", which is three
+        characters and would otherwise pass the length check and be classified."""
+        import numpy as np
+
+        frame = pd.DataFrame({"narrative": [LONG, np.nan, None]})
+        result = classify_frame(frame, StubPredictor(), text_column="narrative")
+        assert result.n_classified == 1
+        assert result.n_skipped == 2
+        assert "nan" not in result.frame["narrative"].str.lower().tolist()
+
+    def test_literal_nan_string_is_skipped(self):
+        frame = pd.DataFrame({"narrative": [LONG, "nan", "NaN"]})
+        result = classify_frame(frame, StubPredictor(), text_column="narrative")
+        assert result.n_classified == 1
+
     def test_all_rows_unusable_is_rejected(self):
         frame = pd.DataFrame({"narrative": ["", " ", "a"]})
         with pytest.raises(BatchError, match="No row contained usable"):
