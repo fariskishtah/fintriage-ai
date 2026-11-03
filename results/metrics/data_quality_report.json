@@ -1,0 +1,40 @@
+{
+  "n_input": 162421,
+  "n_null_text": 10,
+  "n_null_label": 0,
+  "n_empty_text": 0,
+  "n_invalid_label": 0,
+  "n_exact_duplicates": 37939,
+  "n_too_short": 144,
+  "n_truncated_long": 850,
+  "n_non_ascii_repaired": 0,
+  "n_output": 124328,
+  "near_duplicate_groups": 9844,
+  "rows_in_multi_member_groups": 30752,
+  "length_percentiles": {
+    "p1": 5.0,
+    "p5": 10.0,
+    "p25": 30.75,
+    "p50": 58.0,
+    "p75": 104.0,
+    "p95": 253.0,
+    "p99": 501.0,
+    "mean": 87.17002217366155,
+    "max": 2685
+  },
+  "label_counts": {
+    "credit_reporting": 56160,
+    "debt_collection": 21018,
+    "mortgages_and_loans": 18719,
+    "credit_card": 14982,
+    "retail_banking": 13449
+  },
+  "label_shares": {
+    "credit_reporting": 0.4517,
+    "debt_collection": 0.1691,
+    "mortgages_and_loans": 0.1506,
+    "credit_card": 0.1205,
+    "retail_banking": 0.1082
+  },
+  "invalid_label_values": {}
+}

@@ -1,0 +1,83 @@
+# FinTriage AI - single source of truth for the pipeline.
+seed: 42
+
+data:
+  # Exact dataset used by the referenced project (verified 2026-11-03).
+  kaggle_slug: shashwatwork/consume-complaints-dataset-fo-nlp
+  kaggle_download_url: https://www.kaggle.com/api/v1/datasets/download/shashwatwork/consume-complaints-dataset-fo-nlp
+  csv_name: complaints_processed.csv
+  raw_dir: data/raw
+  processed_dir: data/processed
+  text_column: narrative
+  label_column: product
+  # Label order is fixed here and reused by training, evaluation and inference.
+  labels:
+    - credit_card
+    - credit_reporting
+    - debt_collection
+    - mortgages_and_loans
+    - retail_banking
+  display_names:
+    credit_card: Credit Card
+    credit_reporting: Credit Reporting
+    debt_collection: Debt Collection
+    mortgages_and_loans: Mortgages and Loans
+    retail_banking: Retail Banking
+
+preprocessing:
+  min_tokens: 3            # drop complaints too short to carry signal
+  max_tokens: 600          # cap pathological outliers (reported, not silently dropped)
+  drop_exact_duplicates: true
+  # Near-duplicate grouping: MinHash-free, char-5gram shingle hashing + union-find.
+  near_duplicate:
+    enabled: true
+    shingle_size: 5
+    num_hashes: 64
+    bands: 16              # bands * rows == num_hashes
+    jaccard_threshold: 0.8
+
+split:
+  # Matches the referenced project's protocol (80/10/10) so our numbers are
+  # directly comparable with its published table. Groups of near-duplicate
+  # narratives are kept inside a single split.
+  train: 0.8
+  val: 0.1
+  test: 0.1
+  stratify: true
+
+rnn:
+  vocab_size: 20000
+  max_len: 200
+  embed_dim: 128
+  hidden_dim: 64
+  dropout: 0.4
+  dense_dim: 64
+  batch_size: 128
+  epochs: 8
+  lr: 0.001
+  early_stopping_patience: 2
+  grad_clip: 1.0
+
+distilbert:
+  model_name: distilbert-base-uncased
+  max_len: 256
+  batch_size: 32
+  eval_batch_size: 64
+  epochs: 2
+  lr: 3.0e-5
+  weight_decay: 0.01
+  warmup_ratio: 0.06
+  grad_clip: 1.0
+
+training:
+  class_weighting: balanced   # computed on the training split only
+
+inference:
+  # Replaced by the value chosen on the validation split by
+  # scripts/calibrate_threshold.py; this is only the fallback.
+  review_threshold: 0.60
+
+app:
+  max_upload_mb: 5
+  max_rows: 2000
+  explain_max_chars: 1200

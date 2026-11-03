@@ -1,0 +1,19 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.DS_Store
+data/raw/*
+data/processed/*
+# the frozen split manifest IS part of the reproducible pipeline (637 KB)
+!data/processed/split_ids.csv.gz
+!data/.gitkeep
+# trained artifacts are not source: they come from training runs or releases
+artifacts/*
+!artifacts/.gitkeep
+*.zip
+.ipynb_checkpoints/
+.pytest_cache/
+gradio_cached_examples/
+*.log

@@ -1,0 +1,14 @@
+# Pinned for reproducibility and for the Hugging Face Spaces runtime.
+torch==2.5.1
+transformers==4.46.3
+tokenizers==0.20.3
+safetensors==0.4.5
+numpy==2.1.3
+pandas==2.2.3
+pyarrow==18.1.0
+scikit-learn==1.5.2
+scipy==1.14.1
+PyYAML==6.0.2
+captum==0.7.0
+gradio==5.9.1
+plotly==5.24.1

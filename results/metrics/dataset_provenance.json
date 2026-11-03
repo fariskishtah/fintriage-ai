@@ -1,0 +1,21 @@
+{
+  "kaggle_slug": "shashwatwork/consume-complaints-dataset-fo-nlp",
+  "download_url": "https://www.kaggle.com/api/v1/datasets/download/shashwatwork/consume-complaints-dataset-fo-nlp",
+  "file": "complaints_processed.csv",
+  "file_size_bytes": 99463046,
+  "sha256": "a120ac8450cb3839bf0085bbae68f7c0f3b5351302cafd0bc85ae27a251010b4",
+  "n_rows": 162421,
+  "columns": [
+    "Unnamed: 0",
+    "product",
+    "narrative"
+  ],
+  "label_counts": {
+    "credit_reporting": 91179,
+    "debt_collection": 23150,
+    "mortgages_and_loans": 18990,
+    "credit_card": 15566,
+    "retail_banking": 13536
+  },
+  "license_note": "Derived from US CFPB Consumer Complaint Database, a public-domain US government dataset. Redistributed on Kaggle by shashwatwork. Narratives are already scrubbed of PII by the CFPB before publication. Raw rows are not committed to this repository."
+}

@@ -1,0 +1,67 @@
+{
+  "splits": {
+    "train": {
+      "n_rows": 99458,
+      "content_sha256": "87b13eecc66aeb378a1db628ab8dc994e6498fd429b02c7a3d9c8952046c60ce",
+      "raw_row_min": 0,
+      "raw_row_max": 162414,
+      "label_counts": {
+        "credit_reporting": 44914,
+        "debt_collection": 16814,
+        "mortgages_and_loans": 14978,
+        "credit_card": 11990,
+        "retail_banking": 10762
+      },
+      "n_duplicate_groups": 82753,
+      "parquet_sha256": "87b13eecc66aeb378a1db628ab8dc994e6498fd429b02c7a3d9c8952046c60ce",
+      "matches_parquet": true,
+      "parquet_n_rows": 99458
+    },
+    "val": {
+      "n_rows": 12435,
+      "content_sha256": "ce29e9217a243c2e6fd77290cb9436920c3775eadc8da5675f65b5787dceaea1",
+      "raw_row_min": 12,
+      "raw_row_max": 162412,
+      "label_counts": {
+        "credit_reporting": 5628,
+        "debt_collection": 2097,
+        "mortgages_and_loans": 1867,
+        "credit_card": 1500,
+        "retail_banking": 1343
+      },
+      "n_duplicate_groups": 10330,
+      "parquet_sha256": "ce29e9217a243c2e6fd77290cb9436920c3775eadc8da5675f65b5787dceaea1",
+      "matches_parquet": true,
+      "parquet_n_rows": 12435
+    },
+    "test": {
+      "n_rows": 12435,
+      "content_sha256": "816bd2187d47f42fab5eb2381649836c1e535320b46f5f59758d1024af88c8f4",
+      "raw_row_min": 14,
+      "raw_row_max": 162401,
+      "label_counts": {
+        "credit_reporting": 5618,
+        "debt_collection": 2107,
+        "mortgages_and_loans": 1874,
+        "credit_card": 1492,
+        "retail_banking": 1344
+      },
+      "n_duplicate_groups": 10337,
+      "parquet_sha256": "816bd2187d47f42fab5eb2381649836c1e535320b46f5f59758d1024af88c8f4",
+      "matches_parquet": true,
+      "parquet_n_rows": 12435
+    }
+  },
+  "verified_against_parquet": true,
+  "cross_split_text_overlap": {
+    "train_val": 0,
+    "train_test": 0,
+    "val_test": 0
+  },
+  "duplicate_groups_spanning_splits": 0,
+  "seed": 42,
+  "dataset_sha256": "a120ac8450cb3839bf0085bbae68f7c0f3b5351302cafd0bc85ae27a251010b4",
+  "manifest_file": "split_ids.csv.gz",
+  "manifest_sha256": "bb1dc946f901fd19d37318427fe6f232bb936a1828b28aefe8b8fb5a7ab3d939",
+  "manifest_size_kb": 636.8
+}

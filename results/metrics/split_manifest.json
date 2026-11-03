@@ -1,0 +1,68 @@
+{
+  "seed": 42,
+  "protocol": {
+    "train": 0.8,
+    "val": 0.1,
+    "test": 0.1
+  },
+  "stratified_by": "product",
+  "grouped_by": "near-duplicate group (MinHash/LSH)",
+  "label_map": {
+    "credit_card": 0,
+    "credit_reporting": 1,
+    "debt_collection": 2,
+    "mortgages_and_loans": 3,
+    "retail_banking": 4
+  },
+  "sizes": {
+    "test": 12435,
+    "train": 99458,
+    "val": 12435
+  },
+  "label_counts": {
+    "test": {
+      "credit_reporting": 5618,
+      "debt_collection": 2107,
+      "mortgages_and_loans": 1874,
+      "credit_card": 1492,
+      "retail_banking": 1344
+    },
+    "train": {
+      "credit_reporting": 44914,
+      "debt_collection": 16814,
+      "mortgages_and_loans": 14978,
+      "credit_card": 11990,
+      "retail_banking": 10762
+    },
+    "val": {
+      "credit_reporting": 5628,
+      "debt_collection": 2097,
+      "mortgages_and_loans": 1867,
+      "credit_card": 1500,
+      "retail_banking": 1343
+    }
+  },
+  "label_shares": {
+    "test": {
+      "credit_reporting": 0.4518,
+      "debt_collection": 0.1694,
+      "mortgages_and_loans": 0.1507,
+      "credit_card": 0.12,
+      "retail_banking": 0.1081
+    },
+    "train": {
+      "credit_reporting": 0.4516,
+      "debt_collection": 0.1691,
+      "mortgages_and_loans": 0.1506,
+      "credit_card": 0.1206,
+      "retail_banking": 0.1082
+    },
+    "val": {
+      "credit_reporting": 0.4526,
+      "debt_collection": 0.1686,
+      "mortgages_and_loans": 0.1501,
+      "credit_card": 0.1206,
+      "retail_banking": 0.108
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "credit_card": 0,
+  "credit_reporting": 1,
+  "debt_collection": 2,
+  "mortgages_and_loans": 3,
+  "retail_banking": 4
+}
