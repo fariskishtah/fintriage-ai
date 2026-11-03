@@ -47,7 +47,7 @@ SPACE_METRICS = [
 ]
 
 
-def stage_space(model_repo: str) -> Path:
+def stage_space(model_repo: str, zerogpu: bool = False, bundle_weights: bool = False) -> Path:
     staging = Path(tempfile.mkdtemp(prefix="fintriage-space-"))
     for rel in SPACE_FILES:
         src = ROOT / rel
@@ -67,14 +67,37 @@ def stage_space(model_repo: str) -> Path:
             copied.append(name)
     print(f"metrics included: {len(copied)}")
 
-    shutil.copy(ROOT / "deploy" / "README_SPACE.md", staging / "README.md")
-    shutil.copy(ROOT / "deploy" / "requirements-space.txt", staging / "requirements.txt")
-    # The Space resolves weights from the model repo at startup.
-    (staging / ".env").write_text(f"FINTRIAGE_MODEL_REPO={model_repo}\n")
+    readme = "README_SPACE_ZEROGPU.md" if zerogpu else "README_SPACE.md"
+    reqs = "requirements-zerogpu.txt" if zerogpu else "requirements-space.txt"
+    shutil.copy(ROOT / "deploy" / readme, staging / "README.md")
+    shutil.copy(ROOT / "deploy" / reqs, staging / "requirements.txt")
+
+    if bundle_weights:
+        # Ship the checkpoint inside the Space. The Space is private, so the
+        # weights stay private, and nothing needs a token at runtime - which is
+        # better than handing the Space a credential just to read our own repo.
+        src = ROOT / "artifacts" / "DistilBERT"
+        if not (src / "model.safetensors").exists():
+            raise SystemExit(f"no checkpoint at {src}")
+        shutil.copytree(src, staging / "model",
+                        ignore=shutil.ignore_patterns("*.npy", "history.json"))
+        config_line = 'os.environ.setdefault("FINTRIAGE_MODEL_DIR", str(HERE / "model"))\n'
+        print(f"bundling weights into the Space: "
+              f"{sum(f.stat().st_size for f in (staging / 'model').rglob('*') if f.is_file())/1e6:.0f} MB")
+    else:
+        config_line = f'os.environ.setdefault("FINTRIAGE_MODEL_REPO", "{model_repo}")\n'
+
+    prelude = "" if not zerogpu else "import zerogpu_runtime  # noqa: F401\n"
     (staging / "app_config.py").write_text(
         "import os\n"
-        f'os.environ.setdefault("FINTRIAGE_MODEL_REPO", "{model_repo}")\n'
+        "from pathlib import Path\n"
+        "\n"
+        "HERE = Path(__file__).resolve().parent\n"
+        + config_line
+        + prelude
     )
+    if zerogpu:
+        shutil.copy(ROOT / "deploy" / "zerogpu_runtime.py", staging / "zerogpu_runtime.py")
     # Make the app import app_config so resolve_model_dir finds the repo.
     # It must go AFTER `from __future__ import annotations`: a __future__ import
     # has to be the first statement in the file, so prepending anything above it
@@ -109,6 +132,13 @@ def main() -> int:
     ap.add_argument("--model-repo", required=True, help="e.g. fariskishtah/fintriage-distilbert")
     ap.add_argument("--public", action="store_true", help="make both repos public")
     ap.add_argument("--skip-weights", action="store_true")
+    ap.add_argument("--zerogpu", action="store_true",
+                    help="ZeroGPU flavour (zero-a10g): the only free tier that hosts a "
+                         "PRIVATE Gradio Space. cpu-basic returns HTTP 402 without PRO.")
+    ap.add_argument("--bundle-weights", action="store_true",
+                    help="ship the checkpoint inside the Space via LFS instead of "
+                         "pulling it from a model repo. Avoids needing any token in "
+                         "the Space when the model repo is private.")
     args = ap.parse_args()
 
     from huggingface_hub import HfApi, get_token
@@ -144,10 +174,24 @@ def main() -> int:
         )
         print(f"weights -> https://huggingface.co/{args.model_repo}")
 
-    staging = stage_space(args.model_repo)
-    api.create_repo(args.space, repo_type="space", space_sdk="gradio",
-                    exist_ok=True, private=private)
+    staging = stage_space(args.model_repo, zerogpu=args.zerogpu,
+                          bundle_weights=args.bundle_weights)
+    hardware = "zero-a10g" if args.zerogpu else None
+    # Creating an existing ZeroGPU Space again is counted against the free
+    # 2-Space limit and fails with 402, so only create when it is absent.
+    try:
+        existing = api.space_info(args.space)
+        print(f"space exists: private={existing.private} "
+              f"hardware={existing.runtime.requested_hardware if existing.runtime else '?'}")
+    except Exception:
+        api.create_repo(args.space, repo_type="space", space_sdk="gradio",
+                        space_hardware=hardware, exist_ok=True, private=private)
+        print(f"created space ({hardware or 'cpu-basic'}, "
+              f"{'private' if private else 'PUBLIC'})")
     api.upload_folder(folder_path=str(staging), repo_id=args.space, repo_type="space")
+    info = api.space_info(args.space)
+    print(f"visibility: {'private' if info.private else 'PUBLIC'}"
+          f" | hardware: {info.runtime.requested_hardware if info.runtime else '?'}")
     url = f"https://huggingface.co/spaces/{args.space}"
     print(f"\nspace -> {url}")
     print("It builds for a few minutes. Verify at the URL above before calling it deployed.")
