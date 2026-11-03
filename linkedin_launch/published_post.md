@@ -1,84 +1,97 @@
-# Publication status: NOT PUBLISHED — stopped mid-composition
+# Publication status: BLOCKED — post fully composed, images cannot be attached
 
-Stopped because the session hit its usage limit partway through building the
-post. Nothing was published. No duplicate post was created.
+**Not published.** No duplicate post exists; the account's activity feed was
+checked first and contains no FinTriage AI post.
 
-## Where it stopped
+## What is ready, right now, in the composer
 
-The LinkedIn composer was open on the correct account (Faris Kishtah,
-"Post to Anyone") and contained **only the acknowledgment, closing line and
-hashtags**. The body — opening, dataset work, the four model results, the
-application features and the two project links — had not yet been prepended, and
-no images were attached.
-
-**Do not publish what is currently in the composer.** Discard it and start again
-from `linkedin_post.txt`.
-
-## What was proved along the way
-
-Two findings worth keeping, because they cost time to establish:
-
-### 1. The built-in browser *is* signed in to LinkedIn
-
-Earlier reports in this project said no authenticated composer was available.
-That was wrong: `list_connected_browsers` returns empty (no Chrome extension),
-but the built-in browser pane already holds a logged-in LinkedIn session as
-Faris Kishtah. Publication is therefore possible from here.
-
-### 2. Both mentions resolve, and Jana Hatem's profile is confirmed
-
-Both were inserted as real mention entities, not plain text — verified in the
-DOM as `<span data-type="mention">` nodes:
+The LinkedIn composer is open on **Faris Kishtah**, "Post to Anyone", holding
+the complete post — 2,410 characters — verified in the DOM:
 
 ```
-mentionCount: 2
+intact: true
 mentions: ["Instant Software Solutions", "Jana Hatem"]
 ```
 
-The dropdown entry selected for the instructor carried the headline:
+All sixteen content checks passed:
 
-> Jana Hatem — 1st · AI & Data Solutions Engineer | AI & Advanced AI & Data
-> Science & Data Analysis Instructor | Training Program Manager | Hackathon
-> Technical Advisor | Kaggle GrandMaster
+| Check | |
+|---|---|
+| Opening line | ok |
+| Sprint 3 / INSTANT training programme | ok |
+| Near-duplicate leakage finding (9,844 groups, 24.7%) | ok |
+| SimpleRNN 76.24% / 74.15% | ok |
+| LSTM 82.45% / 81.69% | ok |
+| GRU 82.20% / 81.54% | ok |
+| DistilBERT 85.35% / 84.72% | ok |
+| Gradio application features | ok |
+| 121 automated tests | ok |
+| Acknowledgment with both mentions | ok |
+| Closing line | ok |
+| Hashtags | ok |
+| Live demo URL | ok |
+| GitHub URL | ok |
+| No stray "@" text left behind | ok |
+| No Markdown artifacts | ok |
 
-"Data Science & Data Analysis Instructor | Training Program Manager" matches the
-role exactly, which is independent confirmation that this is the right person
-and not one of the other profiles sharing the name.
+**Both mentions are real LinkedIn entities**, not plain text — confirmed as
+`data-type="mention"` nodes in the editor DOM, selected from the autocomplete:
 
-## Two composer behaviours that caused rework
+- **Instant Software Solutions** — chosen from the company results for `@INSTANT`
+- **Jana Hatem** — chosen from `@Jana`, the entry headlined "AI & Advanced AI &
+  Data Science & Data Analysis Instructor | Training Program Manager", which is
+  what distinguishes her from the others sharing the name
 
-Both will bite again on a retry:
+## The blocker: images cannot be attached from here
 
-1. **The caret jumps when LinkedIn injects a link preview.** Typing the body in
-   two calls, with the URLs in the first, scrambled the text into
-   `Special th@INSTANTanks to set was touched.` Type the body in a single pass,
-   or add the URLs last.
-2. **`cmd+Down` does not move to the end of the document**; it inserted text
-   mid-table. Click directly at the intended position instead. Note also that
-   `cmd+z` undid the *entire* typed block at once, not the last few characters.
-3. **A space ends the mention query.** `@INSTANT Software` returned an
-   unfiltered list of people; `@INSTANT` returned companies with Instant
-   Software Solutions first. The search is also debounced and may need a
-   character deleted and retyped before it filters.
+The five screenshots could not be added. Every available route is closed:
 
-## Remaining steps
+1. **The built-in browser has no file-upload tool.** Its toolset covers clicks,
+   typing, JS and navigation, but nothing that can set an `<input type="file">`.
+2. **In-page fetch is blocked by LinkedIn's CSP.** Serving the images from
+   `http://127.0.0.1:8799` with permissive CORS and building `File` objects in
+   the page failed with `TypeError: Failed to fetch`; an `<img>` load from the
+   same origin also failed. Fetching them over HTTPS from the now-public GitHub
+   repository failed the same way — LinkedIn restricts outbound connections.
+3. **The native file picker cannot be driven.** LinkedIn's media editor offers
+   "Upload from computer", which opens a macOS dialog belonging to the Claude
+   desktop app. That app is not in the list of applications the desktop-control
+   tool can be granted, so the dialog is unreachable.
+4. **Embedding the images as data URIs** would mean passing ~1.6 MB of base64
+   through a tool call. Not viable.
 
-1. Discard the current composer contents.
-2. Paste the body of `linkedin_post.txt` **in one pass**, ending at
-   "Special thanks to ".
-3. Type `@INSTANT`, wait for the company list, select **Instant Software
-   Solutions**.
-4. Type ` and Eng. @Jana`, delete and retype the last character to trigger the
-   search, select **Jana Hatem** (the instructor headline above).
-5. Type the remainder: " for the guidance ... #MLOps".
-6. Attach the five images from `screenshots/` in filename order.
-7. Verify against `publication_checklist.md`, then publish.
-8. Record the live URL here.
+A post without the five screenshots is incomplete against
+`publication_checklist.md`, so it was not published.
 
-## Verified assets, ready
+## What remains — two actions, about thirty seconds
 
-- `linkedin_post.txt` — 353 words, no Markdown artifacts, plain-text results table
-- `screenshots/01..05` — five authentic 1080x1350 frames
-- Links confirmed public and reachable anonymously:
-  - https://huggingface.co/spaces/fariskishtah/fintriage-ai
-  - https://github.com/fariskishtah/fintriage-ai
+The composer is open and ready. In the LinkedIn window:
+
+1. Click the **image icon** in the toolbar, then **Upload from computer**.
+2. Select all five files, in filename order, from:
+   `/Users/fariskishtah/project/fintriage-ai/linkedin_launch/screenshots/`
+   - `01_fintriage_overview.png`
+   - `02_ai_classification.png`
+   - `03_model_comparison.png`
+   - `04_explainable_ai.png`
+   - `05_batch_analytics.png`
+3. Click **Post**.
+
+Do not retype anything. The text and both mentions are already in place, and
+retyping risks losing the tags.
+
+### One note on the link preview
+
+LinkedIn auto-generated a preview card for the Hugging Face link, which hides
+the media buttons. It was dismissed with its "x" so the image icon is visible.
+If it reappears after adding images, dismiss it again — a post can carry images
+or a link card, not both. The URLs stay in the text either way.
+
+### One structural change from the saved draft
+
+In `linkedin_post.txt` the two links sit above the acknowledgment. In the
+composer they are at the end, after the hashtags. This was deliberate: typing a
+URL mid-post makes LinkedIn insert a preview card, and that re-render moved the
+caret and corrupted the text three separate times, once dropping `@INSTANT`
+inside the GitHub URL. Typing the URLs last avoids it entirely. The content is
+otherwise identical.
