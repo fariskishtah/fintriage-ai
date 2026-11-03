@@ -75,10 +75,25 @@ def stage_space(model_repo: str) -> Path:
         "import os\n"
         f'os.environ.setdefault("FINTRIAGE_MODEL_REPO", "{model_repo}")\n'
     )
-    # Prepend the env default so predictor.resolve_model_dir finds the repo.
+    # Make the app import app_config so resolve_model_dir finds the repo.
+    # It must go AFTER `from __future__ import annotations`: a __future__ import
+    # has to be the first statement in the file, so prepending anything above it
+    # is a SyntaxError and the Space would fail to boot.
     app = staging / "app.py"
-    app.write_text("import app_config  # noqa: F401  (sets FINTRIAGE_MODEL_REPO)\n"
-                   + app.read_text())
+    lines = app.read_text().splitlines(keepends=True)
+    inject = "import app_config  # noqa: F401  (sets FINTRIAGE_MODEL_REPO)\n"
+    future = next(
+        (i for i, line in enumerate(lines) if line.startswith("from __future__ import")),
+        None,
+    )
+    if future is None:
+        raise SystemExit("app.py has no __future__ import; check the injection point")
+    lines.insert(future + 1, inject)
+    app.write_text("".join(lines))
+    # Prove the result parses before it is ever uploaded.
+    import ast
+
+    ast.parse(app.read_text(), filename="app.py")
 
     for path in staging.rglob("*"):
         if path.is_file() and (path.suffix in {".pem", ".key"} or path.name == "kaggle.json"):
@@ -96,16 +111,16 @@ def main() -> int:
     ap.add_argument("--skip-weights", action="store_true")
     args = ap.parse_args()
 
-    token = os.environ.get("HF_TOKEN")
+    from huggingface_hub import HfApi, get_token
+
+    # Prefer an explicit env var; otherwise use the token `hf auth login` stored.
+    token = os.environ.get("HF_TOKEN") or get_token()
     if not token:
         raise SystemExit(
-            "HF_TOKEN is not set.\n"
-            "  1. https://huggingface.co/settings/tokens -> New token, type 'Write'\n"
-            "  2. export HF_TOKEN=hf_...\n"
-            "  3. re-run this command"
+            "Not authenticated.\n"
+            "  hf auth login              (browser or token)\n"
+            "  or export HF_TOKEN=hf_...  (write scope)"
         )
-
-    from huggingface_hub import HfApi
 
     api = HfApi(token=token)
     who = api.whoami()
