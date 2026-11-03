@@ -22,7 +22,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CODE_DATASET = "fintriage-ai-code"
-KERNEL = "fintriage-distilbert-train"
+KERNEL = "fintriage-distilbert-training"
 COMPLAINTS = "shashwatwork/consume-complaints-dataset-fo-nlp"
 
 # Shipped to Kaggle. Deliberately excludes data/raw, trained artifacts, the venv
@@ -33,8 +33,11 @@ METRICS = ["dataset_provenance.json", "split_fingerprint.json", "split_manifest.
            "label_map.json", "data_quality_report.json"]
 
 
+KAGGLE_BIN = str(Path(sys.executable).with_name("kaggle"))
+
+
 def kaggle(*args: str, check: bool = True) -> subprocess.CompletedProcess:
-    cmd = [sys.executable, "-m", "kaggle", *args]
+    cmd = [KAGGLE_BIN if Path(KAGGLE_BIN).exists() else "kaggle", *args]
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.stdout.strip():
         print(result.stdout.strip())
@@ -103,7 +106,7 @@ def stage_kernel(user: str) -> Path:
         json.dumps(
             {
                 "id": f"{user}/{KERNEL}",
-                "title": "FinTriage DistilBERT training",
+                "title": "FinTriage DistilBERT Training",
                 "code_file": f"{KERNEL}.ipynb",
                 "language": "python",
                 "kernel_type": "notebook",

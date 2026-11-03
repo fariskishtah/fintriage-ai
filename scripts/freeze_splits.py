@@ -34,6 +34,19 @@ from src.preprocessing.split import (  # noqa: E402
 )
 
 MANIFEST = "split_ids.csv.gz"
+# Kaggle's dataset pipeline transparently decompresses .gz on upload, so the
+# manifest can legitimately arrive as either name. pandas reads both.
+MANIFEST_NAMES = ("split_ids.csv.gz", "split_ids.csv")
+
+
+def find_manifest(processed_dir) -> "Path | None":
+    from pathlib import Path as _P
+
+    for name in MANIFEST_NAMES:
+        candidate = _P(processed_dir) / name
+        if candidate.exists():
+            return candidate
+    return None
 
 
 def fingerprint(texts: pd.Series) -> str:

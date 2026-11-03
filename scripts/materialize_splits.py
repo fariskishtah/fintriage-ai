@@ -21,7 +21,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from src.config import load_config  # noqa: E402
 from src.preprocessing.quality import normalise_whitespace  # noqa: E402
-from scripts.freeze_splits import MANIFEST, fingerprint  # noqa: E402
+from scripts.freeze_splits import MANIFEST_NAMES, find_manifest, fingerprint  # noqa: E402
 
 
 def main() -> int:
@@ -35,11 +35,15 @@ def main() -> int:
     text_col, label_col = data["text_column"], data["label_column"]
     proc = cfg.path(data["processed_dir"])
     out_dir = Path(args.out) if args.out else proc
-    manifest_path = Path(args.manifest) if args.manifest else proc / MANIFEST
+    manifest_path = Path(args.manifest) if args.manifest else find_manifest(proc)
 
-    if not manifest_path.exists():
-        print(f"missing manifest {manifest_path}", file=sys.stderr)
+    if manifest_path is None or not manifest_path.exists():
+        print(
+            f"no split manifest in {proc} (looked for {', '.join(MANIFEST_NAMES)})",
+            file=sys.stderr,
+        )
         return 1
+    print(f"manifest: {manifest_path.name}")
 
     raw_csv = cfg.path(data["raw_dir"], data["csv_name"])
     provenance = cfg.path("results", "metrics", "dataset_provenance.json")
