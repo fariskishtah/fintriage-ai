@@ -20,14 +20,15 @@
 
 | # | Item | Status | What is needed |
 |---|---|---|---|
-| 10 | INSTANT mention | **Blocked** | Organisation identified as INSTANT Software Solutions; LinkedIn page URL not verified. Insert via composer autocomplete |
-| 11 | Jana Hatem mention | **Blocked** | Role confirmed; profile URL not verified and deliberately not guessed. Insert via composer autocomplete |
+| 10 | INSTANT mention | **URL confirmed, tag pending** | https://www.linkedin.com/company/instantsoftwaresolution/ — insert via composer autocomplete (2 places) |
+| 11 | Jana Hatem mention | **URL confirmed, tag pending** | https://www.linkedin.com/in/janahatem — insert via composer autocomplete (1 place) |
 | 12 | GitHub visibility | **Public** | Made public on your instruction. Full history audited first: no secrets, no credentials, no raw narratives, no weights in any commit |
 | 13 | Hugging Face Space visibility | **Public** | `RUNNING` on ZeroGPU |
 | 14 | Model repo visibility | **Public** | 268.8 MB checkpoint |
 | 15 | Link accessibility | **Verified** | All four URLs return 200 to an anonymous request |
 | 16 | Live check on the public URL | **Passed** | Real browser on the public Space: classification returned Mortgages and Loans at 99.1%, matching local. Mobile at 375 px: no horizontal overflow |
-| 17 | Final approval | **Pending** | Nothing is published to LinkedIn until you say so |
+| 17 | Post length | **Ready** | 340 words, inside the 250–350 target |
+| 18 | Final approval | **Pending** | Nothing is published to LinkedIn until you say so |
 
 ## Links now in the post
 
