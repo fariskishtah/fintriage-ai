@@ -97,6 +97,11 @@ footer {{ display: none !important; }}
 .ft-tile .ft-n {{ font-size: .78rem; color: var(--ft-muted); margin-top: 2px; }}
 
 /* ---------- notes ---------- */
+/* Long paths and tracebacks must wrap, not push the page sideways on a phone. */
+.ft-note, .ft-card, .ft-verdict, .ft-disclaimer {{ overflow-wrap: anywhere; }}
+.ft-note code, .ft-card code {{
+  white-space: pre-wrap; word-break: break-all; font-size: .8em;
+}}
 .ft-note {{
   border-left: 3px solid var(--ft-blue); background: #F1F6FE;
   padding: 12px 16px; border-radius: 0 10px 10px 0; font-size: .86rem; color: #26405F;
@@ -124,7 +129,9 @@ table.ft-table tr.ft-winner td {{ background: #F0F6FF; font-weight: 600; }}
 .tab-nav button.selected {{ color: var(--ft-blue) !important; }}
 
 @media (max-width: 640px) {{
+  .gradio-container {{ padding-left: 16px !important; padding-right: 16px !important; }}
   #ft-hero {{ padding: 22px 20px; }}
+  table.ft-table {{ display: block; overflow-x: auto; }}
   #ft-hero h1 {{ font-size: 1.5rem; }}
   .ft-card {{ padding: 16px; }}
   .ft-verdict .ft-cat {{ font-size: 1.3rem; }}

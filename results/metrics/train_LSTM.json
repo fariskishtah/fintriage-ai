@@ -1,0 +1,87 @@
+{
+  "model": "LSTM",
+  "device": "mps",
+  "trainable_parameters": 2614149,
+  "train_time_sec": 3381.7,
+  "epochs_run": 8,
+  "best_val_f1_macro": 0.81474,
+  "class_weights": {
+    "credit_card": 1.659,
+    "credit_reporting": 0.4429,
+    "debt_collection": 1.183,
+    "mortgages_and_loans": 1.3281,
+    "retail_banking": 1.8483
+  },
+  "hyperparameters": {
+    "vocab_size": 20000,
+    "max_len": 200,
+    "embed_dim": 128,
+    "hidden_dim": 64,
+    "dropout": 0.4,
+    "dense_dim": 64,
+    "batch_size": 128,
+    "epochs": 8,
+    "lr": 0.001,
+    "early_stopping_patience": 2,
+    "grad_clip": 1.0
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.02309,
+      "val_loss": 0.67803,
+      "val_accuracy": 0.77016,
+      "val_f1_macro": 0.75516
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.64965,
+      "val_loss": 0.5862,
+      "val_accuracy": 0.79349,
+      "val_f1_macro": 0.78651
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.55578,
+      "val_loss": 0.54029,
+      "val_accuracy": 0.79952,
+      "val_f1_macro": 0.79149
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.49154,
+      "val_loss": 0.52594,
+      "val_accuracy": 0.80523,
+      "val_f1_macro": 0.79948
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.45262,
+      "val_loss": 0.51304,
+      "val_accuracy": 0.8193,
+      "val_f1_macro": 0.80866
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.42028,
+      "val_loss": 0.50493,
+      "val_accuracy": 0.81448,
+      "val_f1_macro": 0.80634
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.38427,
+      "val_loss": 0.53183,
+      "val_accuracy": 0.82509,
+      "val_f1_macro": 0.8129
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.35851,
+      "val_loss": 0.5285,
+      "val_accuracy": 0.82421,
+      "val_f1_macro": 0.81474
+    }
+  ],
+  "smoke_run": false
+}
