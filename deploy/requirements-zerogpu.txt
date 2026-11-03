@@ -1,8 +1,15 @@
 # Hugging Face Space, ZeroGPU (zero-a10g) flavour.
 # ZeroGPU images ship CUDA-enabled torch, so torch is NOT pinned to the CPU
 # wheel index here the way deploy/requirements-space.txt does for cpu-basic.
+#
+# torch is 2.8.0, not the 2.5.1 the rest of the project pins: ZeroGPU rejects
+# anything older ("Supported versions: 2.13.0, 2.12.1, 2.11.0, 2.10.0, 2.9.1,
+# 2.8.0"). 2.8.0 is the closest supported release to the one the model was
+# trained and evaluated on. The checkpoint is safetensors, so it is not tied to
+# a torch version; the live prediction is checked against the local one after
+# deploy to confirm the numerics agree.
 spaces
-torch==2.5.1
+torch==2.8.0
 transformers==4.46.3
 tokenizers==0.20.3
 safetensors==0.4.5
