@@ -1,97 +1,81 @@
-# Publication status: BLOCKED — post fully composed, images cannot be attached
+# Publication status: PUBLISHED and verified
 
-**Not published.** No duplicate post exists; the account's activity feed was
-checked first and contains no FinTriage AI post.
+**Live post:**
+https://www.linkedin.com/feed/update/urn:li:ugcPost:7523425146909483008/
 
-## What is ready, right now, in the composer
+Published on the account of Faris Kishtah. One post, no duplicates — the
+account's activity feed was checked beforehand and held no FinTriage AI post.
 
-The LinkedIn composer is open on **Faris Kishtah**, "Post to Anyone", holding
-the complete post — 2,410 characters — verified in the DOM:
+## Verified on the live post, not on the draft
 
-```
-intact: true
-mentions: ["Instant Software Solutions", "Jana Hatem"]
-```
+Every check below was read off the published page.
 
-All sixteen content checks passed:
+### Mentions — both resolve to the exact profiles supplied
 
-| Check | |
+| Mention | Resolves to |
 |---|---|
-| Opening line | ok |
-| Sprint 3 / INSTANT training programme | ok |
-| Near-duplicate leakage finding (9,844 groups, 24.7%) | ok |
-| SimpleRNN 76.24% / 74.15% | ok |
-| LSTM 82.45% / 81.69% | ok |
-| GRU 82.20% / 81.54% | ok |
-| DistilBERT 85.35% / 84.72% | ok |
-| Gradio application features | ok |
-| 121 automated tests | ok |
-| Acknowledgment with both mentions | ok |
-| Closing line | ok |
-| Hashtags | ok |
-| Live demo URL | ok |
-| GitHub URL | ok |
-| No stray "@" text left behind | ok |
-| No Markdown artifacts | ok |
+| Instant Software Solutions | `https://www.linkedin.com/company/instantsoftwaresolution/` |
+| Jana Hatem | `https://www.linkedin.com/in/janahatem/` |
 
-**Both mentions are real LinkedIn entities**, not plain text — confirmed as
-`data-type="mention"` nodes in the editor DOM, selected from the autocomplete:
+These were read from the live post's anchor hrefs, so they are real, clickable
+LinkedIn tags, not styled text.
 
-- **Instant Software Solutions** — chosen from the company results for `@INSTANT`
-- **Jana Hatem** — chosen from `@Jana`, the entry headlined "AI & Advanced AI &
-  Data Science & Data Analysis Instructor | Training Program Manager", which is
-  what distinguishes her from the others sharing the name
+### Images — five attached
 
-## The blocker: images cannot be attached from here
+Five full-size images are on the post, in filename order:
 
-The five screenshots could not be added. Every available route is closed:
+1. `01_fintriage_overview.png` — application overview
+2. `02_ai_classification.png` — live classification
+3. `03_model_comparison.png` — four-model comparison
+4. `04_explainable_ai.png` — Integrated Gradients
+5. `05_batch_analytics.png` — batch processing and analytics
 
-1. **The built-in browser has no file-upload tool.** Its toolset covers clicks,
-   typing, JS and navigation, but nothing that can set an `<input type="file">`.
-2. **In-page fetch is blocked by LinkedIn's CSP.** Serving the images from
-   `http://127.0.0.1:8799` with permissive CORS and building `File` objects in
-   the page failed with `TypeError: Failed to fetch`; an `<img>` load from the
-   same origin also failed. Fetching them over HTTPS from the now-public GitHub
-   repository failed the same way — LinkedIn restricts outbound connections.
-3. **The native file picker cannot be driven.** LinkedIn's media editor offers
-   "Upload from computer", which opens a macOS dialog belonging to the Claude
-   desktop app. That app is not in the list of applications the desktop-control
-   tool can be granted, so the dialog is unreachable.
-4. **Embedding the images as data URIs** would mean passing ~1.6 MB of base64
-   through a tool call. Not viable.
+### Content
 
-A post without the five screenshots is incomplete against
-`publication_checklist.md`, so it was not published.
+| Element | Present |
+|---|---|
+| Opening line | yes |
+| Sprint 3 / INSTANT training programme | yes |
+| Near-duplicate leakage finding (9,844 groups, 24.7%) | yes |
+| SimpleRNN — 76.24% \| 74.15% | yes |
+| LSTM — 82.45% \| 81.69% | yes |
+| GRU — 82.20% \| 81.54% | yes |
+| DistilBERT — 85.35% \| 84.72% | yes |
+| Gradio application features | yes |
+| 121 automated tests | yes |
+| Acknowledgment | yes |
+| Closing line | yes |
+| Hashtags | yes |
 
-## What remains — two actions, about thirty seconds
+### Links
 
-The composer is open and ready. In the LinkedIn window:
+LinkedIn rewrote both URLs to its own `lnkd.in` shortener, which is its normal
+behaviour for outbound links. Both were followed to confirm the destinations:
 
-1. Click the **image icon** in the toolbar, then **Upload from computer**.
-2. Select all five files, in filename order, from:
-   `/Users/fariskishtah/project/fintriage-ai/linkedin_launch/screenshots/`
-   - `01_fintriage_overview.png`
-   - `02_ai_classification.png`
-   - `03_model_comparison.png`
-   - `04_explainable_ai.png`
-   - `05_batch_analytics.png`
-3. Click **Post**.
+| In the post | Destination |
+|---|---|
+| `lnkd.in/dqyHaxsA` | `https://huggingface.co/spaces/fariskishtah/fintriage-ai` |
+| `lnkd.in/dtfFPsMf` | `https://github.com/fariskishtah/fintriage-ai` |
 
-Do not retype anything. The text and both mentions are already in place, and
-retyping risks losing the tags.
+## How the images got attached
 
-### One note on the link preview
+Not by automation. Every programmatic route was closed: the built-in browser has
+no file-upload tool, LinkedIn's CSP blocked building `File` objects in-page from
+both a local CORS server and the public GitHub raw URLs, and the native file
+picker belongs to an application the desktop-control tool cannot be granted.
+The five files were selected by hand in LinkedIn's own uploader, and the post
+published from there.
 
-LinkedIn auto-generated a preview card for the Hugging Face link, which hides
-the media buttons. It was dismissed with its "x" so the image icon is visible.
-If it reappears after adding images, dismiss it again — a post can carry images
-or a link card, not both. The URLs stay in the text either way.
+The post text and both mentions were composed programmatically and were intact
+in the composer at that point — 2,410 characters, both mentions verified as
+`data-type="mention"` nodes before publishing.
 
-### One structural change from the saved draft
+## One structural difference from linkedin_post.txt
 
-In `linkedin_post.txt` the two links sit above the acknowledgment. In the
-composer they are at the end, after the hashtags. This was deliberate: typing a
-URL mid-post makes LinkedIn insert a preview card, and that re-render moved the
-caret and corrupted the text three separate times, once dropping `@INSTANT`
-inside the GitHub URL. Typing the URLs last avoids it entirely. The content is
-otherwise identical.
+In the saved draft the two project links sit above the acknowledgment. In the
+published post they are at the end, after the hashtags.
+
+This was deliberate. Typing a URL mid-post makes LinkedIn insert a link preview
+card, and that re-render moved the editor caret three separate times, once
+dropping `@INSTANT` inside the GitHub URL and once truncating a sentence.
+Typing the URLs last removed the problem. The wording is otherwise identical.
